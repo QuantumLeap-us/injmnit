@@ -111,7 +111,7 @@ const Minter: React.FC = () => {
       setLogs((pre) => [...pre, `成功导入钱包: ${address.address}`]);
 
       const queryClient = await getQueryClient(
-        "https://1rpc.io/4azkQSbDPceRvfTTa/inj-lcd"
+        "https://sentry.lcd.injective.network:443"
       );
       const result = await queryClient.cosmos.bank.v1beta1.balance({
         address: address.address,
